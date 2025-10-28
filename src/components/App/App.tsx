@@ -3,14 +3,17 @@ import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import { fetchMovies } from "../../services/movieApi";
 import type { Movie, MovieResponse } from "../../types/movie";
-import MovieCard from "../MovieCard/MovieCard";
+import MovieGrid from "../MovieGrid/MovieGrid";
+import MovieModal from "../MovieModal/MovieModal";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import css from "./App.module.css";
-
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [query, setQuery] = useState<string>("");
   const [page, setPage] = useState<number>(1);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const queryOptions: UseQueryOptions<MovieResponse, Error, MovieResponse> = {
     queryKey: ["movies", query, page],
@@ -38,8 +41,8 @@ const App = () => {
         <input
           type="text"
           value={searchTerm}
-          placeholder="Search movies..."
           onChange={handleInputChange}
+          placeholder="Search movies..."
           className={css.searchInput}
         />
         <button type="submit" className={css.searchButton}>
@@ -47,14 +50,10 @@ const App = () => {
         </button>
       </form>
 
-      {isLoading && <p>Loading...</p>}
-      {isError && <p>Error occurred!</p>}
+      {isLoading && <Loader />}
+      {isError && <ErrorMessage message="Error fetching movies" />}
 
-      <div className={css.moviesGrid}>
-        {data?.results.map((movie: Movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
+      <MovieGrid movies={data?.results || []} onMovieClick={setSelectedMovie} />
 
       {totalPages > 1 && (
         <ReactPaginate
@@ -68,6 +67,10 @@ const App = () => {
           nextLabel="→"
           previousLabel="←"
         />
+      )}
+
+      {selectedMovie && (
+        <MovieModal movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
       )}
     </div>
   );
