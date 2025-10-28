@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
-import { fetchMovies } from "../../services/movieApi";
+import { fetchMovies } from "../../services/movieService";
 import type { Movie, MovieResponse } from "../../types/movie";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import MovieModal from "../MovieModal/MovieModal";
