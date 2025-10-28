@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
-import { fetchMovies } from "../../api/movieApi";
+import { fetchMovies } from "../../services/movieApi";
 import type { Movie, MovieResponse } from "../../types/movie";
 import MovieCard from "../MovieCard/MovieCard";
 import css from "./App.module.css";
