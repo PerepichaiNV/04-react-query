@@ -6,6 +6,7 @@ import type { Movie, MovieResponse } from "../../types/movie";
 import MovieCard from "../MovieCard/MovieCard";
 import css from "./App.module.css";
 
+
 const App = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [query, setQuery] = useState<string>("");
