@@ -1,32 +1,60 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { Movie } from "../../types/movie";
 import css from "./MovieModal.module.css";
 
 interface MovieModalProps {
-  movie: Movie | null;
+  movie: Movie;
   onClose: () => void;
 }
 
-const MovieModal = ({ movie, onClose }: MovieModalProps) => {
-  if (!movie) return null;
+const modalRoot = document.getElementById("modal-root") as HTMLElement;
 
-  return (
-    <div className={css.overlay} onClick={onClose}>
-      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+const MovieModal = ({ movie, onClose }: MovieModalProps) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  return createPortal(
+    <div className={css.overlay} onClick={handleOverlayClick}>
+      <div className={css.modal}>
         <button className={css.closeButton} onClick={onClose}>
           ×
         </button>
-        {movie.poster_path && (
+
+        {movie.backdrop_path && (
           <img
-            src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+            src={`https://image.tmdb.org/t/p/w780${movie.backdrop_path}`}
             alt={movie.title}
-            className={css.poster}
+            className={css.backdrop}
           />
         )}
+
         <h2>{movie.title}</h2>
+
+       {movie.vote_average !== undefined && (
+          <p><strong>Rating:</strong> {movie.vote_average.toFixed(1)}</p>
+        )}
+
         <p><strong>Release date:</strong> {movie.release_date}</p>
         <p>{movie.overview}</p>
       </div>
-    </div>
+    </div>,
+    modalRoot
   );
 };
 
