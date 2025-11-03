@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import toast, { Toaster } from "react-hot-toast";
@@ -31,9 +31,11 @@ const App = () => {
     setPage(1);
   };
 
-  if (isSuccess && movies.length === 0) {
-    toast.error("No movies found for your query!");
-  }
+  useEffect(() => {
+    if (isSuccess && movies.length === 0) {
+      toast.error("No movies found for your query!");
+    }
+  }, [isSuccess, movies.length]);
 
   return (
     <div className={css.container}>
